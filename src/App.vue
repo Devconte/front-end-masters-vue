@@ -1,12 +1,12 @@
 <script setup>
-import { ref } from "vue";
+import { ref,computed } from "vue";
 
 const charactersList = ref([
-  { name: "Naruto", favorite: false },
-  { name: "Sasuke", favorite: false },
-  { name: "Sakura", favorite: false },
-  { name: "Kiba", favorite: false },
-  { name: "Kakashi", favorite: false }
+  { name: "Naruto", favorite: false, element: "Wind" },
+  { name: "Sasuke", favorite: false, element: "Fire" },
+  { name: "Sakura", favorite: false, element: "Earth" },
+  { name: "Kiba", favorite: false, element: "Earth" },
+  { name: "Kakashi", favorite: false, element: "Lightning" }
 ]);
 
 const favoriteCharacters = ref([]);
@@ -19,10 +19,32 @@ const addToFavorite = (character) => {
 const addCharacter = (event) => {
   event.preventDefault();
   const name = event.target.name.value;
-  const newCharacter = { name, favorite: false };
+  const newCharacter = { name, favorite: false, element: "Wind" };
   charactersList.value.push(newCharacter);
   event.target.reset();
 };
+
+const elementCounts = computed(() => {
+  const counts = {
+    Wind: 0,
+    Fire: 0,
+    Earth: 0,
+    Lightning: 0,
+  };
+
+  charactersList.value.forEach(character => {
+    counts[character.element]++;
+  });
+
+  return counts;
+});
+
+// Now you can access the counts for each element like this:
+const WindUser = computed(() => elementCounts.value.Wind);
+const FireUser = computed(() => elementCounts.value.Fire);
+const EarthUser = computed(() => elementCounts.value.Earth);
+const LightningUser = computed(() => elementCounts.value.Lightning);
+
 </script>
 
 <template>
@@ -31,6 +53,11 @@ const addCharacter = (event) => {
     <input type="text" id="name" name="name" v-model="newCharacterName"/>
     <button type="submit" >Submit</button>
   </form>
+
+  <h1> Wind User: {{ WindUser }}</h1>
+  <h1> Fire User: {{ FireUser }}</h1>
+  <h1> Earth User: {{ EarthUser }}</h1>
+  <h1> Lightning User: {{ LightningUser }}</h1>
 
   <h1> Naruto </h1>
   <p v-if="charactersList.length === 0"> There are no characters</p>
